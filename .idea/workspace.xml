@@ -15,6 +15,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitSEFilterConfiguration">
@@ -51,12 +56,19 @@
       <recent name="$PROJECT_DIR$/weather_data" />
       <recent name="$PROJECT_DIR$/model" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/adarnn_train" />
+      <recent name="$PROJECT_DIR$/data_prepare" />
+    </key>
   </component>
   <component name="RunManager" selected="Python.weather_traintro">
     <configuration name="TEM_process" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="AdaRNN-BIT" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/weather_data" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -76,6 +88,9 @@
       <module name="AdaRNN-BIT" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/weather_data" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -95,6 +110,9 @@
       <module name="AdaRNN-BIT" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/weather_data" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -114,6 +132,9 @@
       <module name="AdaRNN-BIT" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/weather_data" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -155,13 +176,16 @@
       <module name="AdaRNN-BIT" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/weather_traintro.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/adarnn_train/weather_traintro.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -179,11 +203,11 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.weather_traintro" />
         <item itemvalue="Python.UTG_process" />
         <item itemvalue="Python.TEM_process" />
         <item itemvalue="Python.UT_process" />
         <item itemvalue="Python.TE_process" />
+        <item itemvalue="Python.weather_traintro" />
       </list>
     </recent_temporary>
   </component>
@@ -240,7 +264,23 @@
       <workItem from="1649727935640" duration="3228000" />
       <workItem from="1649732442220" duration="6038000" />
       <workItem from="1649748507700" duration="14792000" />
+      <workItem from="1650079212629" duration="11531000" />
     </task>
+    <task id="LOCAL-00001" summary="merge">
+      <created>1650079291894</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1650079291894</updated>
+    </task>
+    <task id="LOCAL-00002" summary="merge">
+      <created>1650079809670</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1650079809670</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -259,6 +299,9 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="merge" />
+    <MESSAGE value="为模型添加attention的个性化" />
+    <option name="LAST_COMMIT_MESSAGE" value="为模型添加attention的个性化" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -451,7 +494,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/AdaRNN_BIT$main_train__1_.coverage" NAME="main_train (1) 覆盖结果" MODIFIED="1649235410099" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/AdaRNN_BIT$data_process.coverage" NAME="data_process 覆盖结果" MODIFIED="1649055397734" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/weather_data" />
-    <SUITE FILE_PATH="coverage/AdaRNN_BIT$weather_traintro.coverage" NAME="weather_traintro 覆盖结果" MODIFIED="1649924131764" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/AdaRNN_BIT$weather_traintro.coverage" NAME="weather_traintro 覆盖结果" MODIFIED="1649768051278" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/AdaRNN_BIT$train_weather.coverage" NAME="train_weather 覆盖结果" MODIFIED="1646574636543" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/train" />
     <SUITE FILE_PATH="coverage/AdaRNN_BIT$main_train.coverage" NAME="main_train 覆盖结果" MODIFIED="1649210421599" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/train" />
     <SUITE FILE_PATH="coverage/AdaRNN_BIT$gpu_pytorch.coverage" NAME="gpu_pytorch 覆盖结果" MODIFIED="1646222494187" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/model" />

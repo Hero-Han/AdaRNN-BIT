@@ -12,13 +12,12 @@ import os
 
 import numpy as np
 import pandas as pd
-import weather_data.data_QX as data_QX
+import data_prepare.data_QX as data_QX
 import datetime
 from loss.nloss_transfer import TransferLoss
 import torch
 import math
-from weather_data.data_vlsm import pad_all_cases
-from weather_data import TEM_process
+from data_prepare.data_vlsm import pad_all_cases
 import random
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

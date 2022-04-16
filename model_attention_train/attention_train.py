@@ -3,10 +3,10 @@
 #
 # Copyright (C) 2022 Apple, Inc. All Rights Reserved 
 #
-# @Time    : 2022/3/28 21:14
+# @Time    : 2022/4/16 16:18
 # @Author  : SeptKing
 # @Email   : WJH0923@mail.dlut.edu.cn
-# @File    : weather_train.py
+# @File    : attention_train.py
 # @Software: PyCharm
 import torch.nn as nn
 import torch
@@ -19,8 +19,8 @@ import numpy as np
 from loss import Dilate_loss
 from tqdm import tqdm
 from untils import utils
-from model_Sept.Dual_Adarnn import Dual_Adarnn, Cross_Attention, Decoder, Share_Encoder
-import weather_data.TE_process as data_process
+from model_attention.attention_module import Dual_adarnn, Cross_Attention, Decoder, Share_Encoder
+import weather_data.data_TEM_test as data_process
 import matplotlib.pyplot as plt
 from untils.support import *
 from d2l import torch as d2l
@@ -41,11 +41,11 @@ def get_model(name='DualAdarnn'):
     share_encoder = Share_Encoder( n_input=args.d_feat, n_hiddens = n_hiddens,dec_layers=args.dec_layers, dropout=args.dropout,model_type=args.model_name,
                           len_seq=args.len_seq, trans_loss=args.loss_type)
     cross_attention = Cross_Attention(n_hiddens=n_hiddens)
-    decoder = Decoder(output_dim=args.class_num, n_hiddens=n_hiddens,dec_layers=args.dec_layers, dropout=args.dropout, attention=cross_attention)
+    decoder = Decoder(output_dim=args.class_num, n_hiddens=n_hiddens,dec_layers=args.dec_layers, dropout=args.dropout, attention=cross_attention, attention_type=args.attention_type)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    return Dual_Adarnn(share_encoder=share_encoder, decoder=decoder,output_dim=args.class_num, len_seq=args.len_seq, device=device).to(device)
+    return Dual_adarnn(share_encoder=share_encoder, decoder=decoder,output_dim=args.class_num, len_seq=args.len_seq, device=device).to(device)
 
-def train_DualRNN(args, model_king, optimizer, train_loader_list, epoch, teacher_forcing_ratio, alpha, beta, dist_old_before = None, dist_old_after = None, weight_mat_before=None, weight_mat_after=None):
+def train_DualRNN(args, model_king, optimizer, train_loader_list, epoch, teacher_forcing_ratio, alpha, gamma, dist_old_before = None, dist_old_after = None, weight_mat_before=None, weight_mat_after=None):
     model_king.train()
     criterion = nn.MSELoss()  ##代价函数
     criterion_1 = nn.L1Loss()  ##代价函数
@@ -105,8 +105,6 @@ def train_DualRNN(args, model_king, optimizer, train_loader_list, epoch, teacher
             if epoch < args.pre_epoch:
                 pred_s, pred_t,out_weight_list_before,out_weight_list_after,decoder_att,loss_transfer = model_king.for_custom_pre(
                     feature_all_left,feature_all_right,ytrue_all,teacher_forcing_ratio )
-
-
             else:
                 pred_s, pred_t,decoder_att, loss_transfer, dist_before,dist_after,weight_mat_before,weight_mat_after = model_king.for_Boosting(
                     feature_all_left,feature_all_right,ytrue_all,teacher_forcing_ratio ,weight_mat_before ,weight_mat_after)
@@ -117,14 +115,14 @@ def train_DualRNN(args, model_king, optimizer, train_loader_list, epoch, teacher
             loss_t = criterion(pred_t, ytrue_t)
             loss_l1 = criterion_1(pred_s, ytrue_s)
             Loss_s, loss_shape_s, loss_temporal_s = Dilate_loss.dilate_loss(
-                ytrue_s,pred_s, alpha,beta, device)  ##在这里第一个是真实，第二个是预测
+                ytrue_s,pred_s, alpha,gamma, device)  ##在这里第一个是真实，第二个是预测
             Loss_t, loss_shape_t, loss_temporal_t = Dilate_loss.dilate_loss(
-                ytrue_t,pred_t, alpha,beta, device)  ##在这里第一个是真实，第二个是预测
+                ytrue_t,pred_t, alpha,gamma, device)  ##在这里第一个是真实，第二个是预测
 
             total_loss = total_loss + Loss_s +Loss_t+ args.dw * loss_transfer
-        # print("@", out_weight_list_before)
+
         loss_all.append(
-            [total_loss.item(), (Loss_s+Loss_t).item(),loss_transfer.item()])
+            [total_loss.item(), (Loss_s+Loss_t).item(), loss_transfer.item()])
         loss_1_all.append(loss_l1.item())
         optimizer.zero_grad()
         total_loss.backward()
@@ -145,7 +143,7 @@ def train_DualRNN(args, model_king, optimizer, train_loader_list, epoch, teacher
         return loss, loss_l1, weight_mat_before, weight_mat_after, None, None
 
 
-def train_epoch_transfer_Boosting(model, optimizer, train_loader_list, epoch, teacher_forcing_ratio,alpha,beta, dist_old_before = None, dist_old_after = None, weight_mat_before=None, weight_mat_after=None):
+def train_epoch_transfer_Boosting(model, optimizer, train_loader_list, epoch, teacher_forcing_ratio,alpha,gamma, dist_old_before = None, dist_old_after = None, weight_mat_before=None, weight_mat_after=None):
     model.train()
     criterion = nn.MSELoss()  ##代价函数
     criterion_1 = nn.L1Loss()  ##代价函数
@@ -207,9 +205,9 @@ def train_epoch_transfer_Boosting(model, optimizer, train_loader_list, epoch, te
             loss_t = criterion(pred_t, ytrue_t)
             loss_l1 = criterion_1(pred_s, ytrue_s)
             Loss_s, loss_shape_s, loss_temporal_s = Dilate_loss.dilate_loss(
-                pred_s, ytrue_s, alpha,beta, device)  ##在这里第一个是真实，第二个是预测
+                pred_s, ytrue_s, alpha,gamma, device)  ##在这里第一个是真实，第二个是预测
             Loss_t, loss_shape_t, loss_temporal_t = Dilate_loss.dilate_loss(
-                pred_t, ytrue_t,alpha,beta, device)  ##在这里第一个是真实，第二个是预测
+                pred_t, ytrue_t,alpha,gamma, device)  ##在这里第一个是真实，第二个是预测
 
             total_loss = total_loss + Loss_s + Loss_t + args.dw * loss_transfer
         loss_all.append([total_loss.item(), (Loss_s + Loss_t).item(), loss_transfer.item()])
@@ -235,7 +233,7 @@ def get_index(num_domain=2):
     return index
 
 
-def train_epoch_transfer(args, model, optimizer, train_loader_list,alpha,beta,teacher_forcing_ratio):
+def train_epoch_transfer(args, model, optimizer, train_loader_list,alpha,gamma,teacher_forcing_ratio):
     model.train()
     criterion = nn.MSELoss()  ##代价函数
     criterion_1 = nn.L1Loss()  ##代价函数
@@ -293,9 +291,9 @@ def train_epoch_transfer(args, model, optimizer, train_loader_list,alpha,beta,te
             loss_t = criterion(pred_t, ytrue_t)
             loss_l1 = criterion_1(pred_s, ytrue_s)
             Loss_s, loss_shape_s, loss_temporal_s = Dilate_loss.dilate_loss(
-                pred_s, ytrue_s, alpha, beta, device)  ##在这里第一个是真实，第二个是预测
+                pred_s, ytrue_s, alpha, gamma, device)  ##在这里第一个是真实，第二个是预测
             Loss_t, loss_shape_t, loss_temporal_t = Dilate_loss.dilate_loss(
-                pred_t, ytrue_t, alpha,beta, device)  ##在这里第一个是真实，第二个是预测
+                pred_t, ytrue_t, alpha,gamma, device)  ##在这里第一个是真实，第二个是预测
 
             total_loss = total_loss + Loss_s + Loss_t + args.dw * loss_transfer
         loss_all.append([total_loss.item(), (Loss_s + Loss_t).item(), loss_transfer.item()])
@@ -478,11 +476,11 @@ def transform_type(init_weight):
 def main_transfer(args):
     print(args)
 
-    output_path = args.outdir + '_' + args.station + '_' + args.model_name + '_weather_' + \
+    output_path = args.outdir + '_' + args.station + '_' + args.model_name + '_' + args.attention_type +'_weather_' + \
                   args.loss_type + '_' + str(args.pre_epoch) + \
-                  '_' + str(args.dw) + '_' + str(args.alpha) + '_'+ str(args.beta) + '_' + str(args.lr)
-    save_model_name = args.model_name + '_' + args.loss_type + \
-                      '_' + str(args.dw) + '_' + str(args.alpha) + '_'+ str(args.beta) + '_' + str(args.lr) + '.pkl'
+                  '_' + str(args.dw) + '_' + str(args.alpha) + '_'+ str(args.gamma) + '_' + str(args.lr)
+    save_model_name = args.model_name + '_'+ args.attention_type+ '_' + args.loss_type + \
+                      '_' + str(args.dw) + '_' + str(args.alpha) + '_'+ str(args.gamma) + '_' + str(args.lr) + '.pkl'
     utils.dir_exist(output_path)
     pprint('create loaders...')
 
@@ -571,6 +569,7 @@ def get_args():
     # model_king
     ##share部分
     parser.add_argument('--model_name', default='DualAdarnn')
+    parser.add_argument('--attention_type', default='new')
     parser.add_argument('--d_feat', type=int, default=17)  ##特征数
     parser.add_argument('--hidden_size', type=int, default=64)
     parser.add_argument('--num_layers', type=int, default=2)
@@ -585,7 +584,7 @@ def get_args():
     parser.add_argument('--early_stop', type=int, default=60)
     parser.add_argument('--smooth_steps', type=int, default=5)
     parser.add_argument('--batch_size', type=int, default=24)  ##batch_size是分批
-    parser.add_argument('--dw', type=float, default=0.0005)  # 0.05, 1.0, 5.0, 0.05
+    parser.add_argument('--dw', type=float, default=0.05)  # 0.05, 1.0, 5.0, 0.05
     parser.add_argument('--loss_type', type=str, default='cosine')
     parser.add_argument('--station', type=str, default='Jintang')
     parser.add_argument('--data_mode', type=str,default='tdc')
@@ -593,13 +592,13 @@ def get_args():
     parser.add_argument('--len_seq', type=int, default=10)
     parser.add_argument('--teacher_forcing_ratio', type=float, default=0.5)
     parser.add_argument('--alpha', type=float, default=0.5)
-    parser.add_argument('--beta', type=float, default=0.01)
+    parser.add_argument('--gamma', type=float, default=0.01)
     parser.add_argument('--output_size', type=int, default=6)
 
     # other
     parser.add_argument('--seed', type=int, default=10)
-    parser.add_argument('--data_path', default=r'/Volumes/王九和/科研/农业大数据相关/实验/实验程序/AdaRNN-BIT/weather_data')
-    parser.add_argument('--outdir', default='./outputs')
+    parser.add_argument('--data_path', default=r'/Volumes/王九和/科研/农业大数据相关/实验/实验程序/玉皇/AdaRNN-BIT/weather_data')
+    parser.add_argument('--outdir', default='./model_attention_train/outputs')
     parser.add_argument('--overwrite', action='store_true')
     parser.add_argument('--log_file', type=str, default='run.log')
     parser.add_argument('--gpu_id', type=int, default=0)
@@ -620,18 +619,3 @@ if __name__ == '__main__':
     torch.backends.cudnn.benchmark = False
     os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu_id)
     main_transfer(args)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

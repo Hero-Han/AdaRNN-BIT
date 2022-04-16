@@ -3,12 +3,13 @@
 #
 # Copyright (C) 2022 Apple, Inc. All Rights Reserved 
 #
-# @Time    : 2022/4/8 10:01
+# @Time    : 2022/4/16 16:50
 # @Author  : SeptKing
 # @Email   : WJH0923@mail.dlut.edu.cn
-# @File    : TEM_process.py
+# @File    : TEM_data_process.py
 # @Software: PyCharm
 import os
+
 import numpy as np
 import pandas as pd
 import data_prepare.data_QX as data_QX
@@ -20,15 +21,13 @@ from data_prepare.data_vlsm import pad_all_cases
 import random
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(device)
-
 SEED = 1234
 random.seed(SEED)
 
 
 def get_split_time(num_domain=2, mode='pre_process', data_file=None, station=None, dis_type='mmd'):
     spilt_time = {
-        '2': [('2018-4-1 0:0', '2019-3-30 23:0'), ('2019-5-2 0:0', '2019-7-30 23:0')]
+        '2': [('2011-1-1 0:0', '2015-11-30 23:0'), ('2015-12-2 0:0', '2020-3-15 23:0')]
     }
     if mode == 'pre_process':
         return spilt_time[str(num_domain)]
@@ -40,9 +39,9 @@ def get_split_time(num_domain=2, mode='pre_process', data_file=None, station=Non
 
 def TDC(num_domain, data_file, station, dis_type='mmd'):
     start_time = datetime.datetime.strptime(
-        '2018-04-01 00:00:00', '%Y-%m-%d %H:%M:%S')
+        '2011-01-01 00:00:00', '%Y-%m-%d %H:%M:%S')
     end_time = datetime.datetime.strptime(
-        '2019-07-30 23:00:00', '%Y-%m-%d %H:%M:%S')
+        '2020-3-15 23:00:00', '%Y-%m-%d %H:%M:%S')
     num_day = (end_time - start_time).days  ##一共有多少天
     split_N = 10  ##分为10个点
     data = pd.read_pickle(data_file)[station]
@@ -169,13 +168,12 @@ def train_qld_single_station(x, y):
 def load_weather_data_multi_domain(file_path, batch_size=6, station='Jintang', number_domain=2, mode='pre_process',
                                    dis_type='mmd'):
     # mode: 'auto', 'pre_process'
-    data_file = os.path.join(file_path, "TEM_weather.pkl")
-    ##data_file = r'H:/BIT_AdaRNN/weather_data/QX_weather.pkl'
+    data_file = os.path.join(file_path, "TEM_data.pkl")
 
     ##选取训练数据，计算均值和方差
     mean_train, std_train = data_QX.get_weather_data_statistic(data_file, station=station,
-                                                               start_time='2018-4-1 0:0',
-                                                               end_time='2019-7-30 23:0')
+                                                               start_time='2011-1-1 0:0',
+                                                               end_time='2020-3-15 23:0')
     ##对训练数据进行分割，形成分割list
     split_time_list = get_split_time(number_domain, mode=mode, data_file=data_file, station=station, dis_type=dis_type)
     train_list = []  ##如果分成两段就有两个train——loader
@@ -199,14 +197,14 @@ def load_weather_data_multi_domain(file_path, batch_size=6, station='Jintang', n
 
     ##对于验证集和测试集的数据准备
     feat_v, ytrue_v = data_QX.create_dataset(
-        data_file, station=station, start_date='2019-9-2 0:0', end_date='2019-10-31 23:0', mean=None, std=None)
+        data_file, station=station, start_date='2020-6-1 0:0', end_date='2020-10-31 23:0', mean=None, std=None)
     feat_valid, y_valid = train_qld_single_station(feat_v, ytrue_v)
     valid_vld_loader = data_QX.create_train_dataset(
         feat_valid, y_valid, batch_size=batch_size, mean=mean_train, std=std_train)
 
     ##测试集数据调整
     feat_te, ytrue_te = data_QX.create_dataset(
-        data_file, station=station, start_date='2019-6-1 0:0', end_date='2019-9-1 23:0', mean=None, std=None)
+        data_file, station=station, start_date='2019-6-1 0:0', end_date='2020-5-31 23:0', mean=None, std=None)
     feat_test, y_test = train_qld_single_station(feat_te, ytrue_te)
     test_loader = data_QX.create_train_dataset(
         feat_test, y_test, batch_size=batch_size, mean=mean_train, std=std_train)
@@ -214,7 +212,7 @@ def load_weather_data_multi_domain(file_path, batch_size=6, station='Jintang', n
 
 
 if __name__ == '__main__':
-    file_path = r'/Volumes/王九和/科研/农业大数据相关/实验/实验程序/玉皇/AdaRNN-BIT/weather_data'
+    file_path = r'/Volumes/王九和/科研/农业大数据相关/实验/实验程序/AdaRNN-BIT/weather_data'
     train_list, valid_vld_loader, test_loder = load_weather_data_multi_domain(file_path, batch_size=2,
-                                                                              station='Jintang', number_domain=2,
+                                                                              station='Jintang', number_domain=5,
                                                                               mode='tdc', dis_type='mmd')
