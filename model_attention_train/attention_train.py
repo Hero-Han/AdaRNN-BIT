@@ -170,6 +170,8 @@ def train_epoch_transfer_Boosting(model, optimizer, train_loader_list, epoch, te
         flag = False
         index = get_index(len(data_all)-1)
 
+
+
         for temp_index in index:
             s1 = temp_index[0]
             s2 = temp_index[1]
