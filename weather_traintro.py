@@ -71,7 +71,7 @@ def train_DualRNN(args, model_king, optimizer, train_loader_list, epoch, teacher
             list_feat_right.append(fea_right)
             list_ytrue.append(yture)
         flag = False
-
+    ##test
 
         index = get_index(len(data_all)-1)
 
