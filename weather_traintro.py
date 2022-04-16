@@ -598,7 +598,7 @@ def get_args():
 
     # other
     parser.add_argument('--seed', type=int, default=10)
-    parser.add_argument('--data_path', default=r'/Volumes/王九和/科研/农业大数据相关/实验/实验程序/AdaRNN-BIT/weather_data')
+    parser.add_argument('--data_path', default=r'/Volumes/王九和/科研/农业大数据相关/实验/实验程序/玉皇/AdaRNN-BIT/weather_data')
     parser.add_argument('--outdir', default='./outputs')
     parser.add_argument('--overwrite', action='store_true')
     parser.add_argument('--log_file', type=str, default='run.log')

@@ -213,7 +213,7 @@ def load_weather_data_multi_domain(file_path, batch_size=6, station='Jintang', n
 
 
 if __name__ == '__main__':
-    file_path = r'/Volumes/王九和/科研/农业大数据相关/实验/实验程序/AdaRNN-BIT/weather_data'
+    file_path = r'/Volumes/王九和/科研/农业大数据相关/实验/实验程序/玉皇/AdaRNN-BIT/weather_data'
     train_list, valid_vld_loader, test_loder = load_weather_data_multi_domain(file_path, batch_size=2,
                                                                               station='Jintang', number_domain=5,
                                                                               mode='tdc', dis_type='mmd')

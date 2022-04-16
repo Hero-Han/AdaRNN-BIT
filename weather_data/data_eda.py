@@ -4,7 +4,7 @@ import pandas as pd
 import torch
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 total_loss = torch.zeros(1).to(device)
-data_file = r'/Volumes/王九和/科研/农业大数据相关/实验/实验程序/AdaRNN-BIT/weather_data/QX_data.pkl'
+data_file = r'/Volumes/王九和/科研/农业大数据相关/实验/实验程序/玉皇/AdaRNN-BIT/weather_data/QX_data.pkl'
 data = pd.read_pickle(data_file)
 print(data)
 data_x = data['Xinji']
