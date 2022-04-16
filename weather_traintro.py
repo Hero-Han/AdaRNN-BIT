@@ -20,7 +20,7 @@ from loss import Dilate_loss
 from tqdm import tqdm
 from untils import utils
 from model_Sept.Dual_Adarnn import Dual_Adarnn, Cross_Attention, Decoder, Share_Encoder
-import weather_data.data_TEM_test as data_process
+import weather_data.TE_process as data_process
 import matplotlib.pyplot as plt
 from untils.support import *
 from d2l import torch as d2l
@@ -480,9 +480,9 @@ def main_transfer(args):
 
     output_path = args.outdir + '_' + args.station + '_' + args.model_name + '_weather_' + \
                   args.loss_type + '_' + str(args.pre_epoch) + \
-                  '_' + str(args.dw) + '_' + str(args.lr)
+                  '_' + str(args.dw) + '_' + str(args.alpha) + '_'+ str(args.beta) + '_' + str(args.lr)
     save_model_name = args.model_name + '_' + args.loss_type + \
-                      '_' + str(args.dw) + '_' + str(args.lr) + '.pkl'
+                      '_' + str(args.dw) + '_' + str(args.alpha) + '_'+ str(args.beta) + '_' + str(args.lr) + '.pkl'
     utils.dir_exist(output_path)
     pprint('create loaders...')
 
@@ -577,23 +577,23 @@ def get_args():
     parser.add_argument('--dropout', type=float, default=0.01)
     parser.add_argument('--dec_layers', type=int, default=1)
     parser.add_argument('--class_num', type=int, default=1)
-    parser.add_argument('--pre_epoch', type=int, default=5)  # 30, 40, 50
+    parser.add_argument('--pre_epoch', type=int, default=20)  # 30, 40, 50
 
     # training
-    parser.add_argument('--n_epochs', type=int, default=15)
+    parser.add_argument('--n_epochs', type=int, default=200)
     parser.add_argument('--lr', type=float, default=5e-4)
-    parser.add_argument('--early_stop', type=int, default=10)
+    parser.add_argument('--early_stop', type=int, default=60)
     parser.add_argument('--smooth_steps', type=int, default=5)
     parser.add_argument('--batch_size', type=int, default=24)  ##batch_size是分批
-    parser.add_argument('--dw', type=float, default=0.05)  # 0.05, 1.0, 5.0, 0.05
+    parser.add_argument('--dw', type=float, default=0.0005)  # 0.05, 1.0, 5.0, 0.05
     parser.add_argument('--loss_type', type=str, default='cosine')
     parser.add_argument('--station', type=str, default='Jintang')
     parser.add_argument('--data_mode', type=str,default='tdc')
     parser.add_argument('--num_domain', type=int, default=3)
     parser.add_argument('--len_seq', type=int, default=10)
     parser.add_argument('--teacher_forcing_ratio', type=float, default=0.5)
-    parser.add_argument('--alpha', type=float, default=0.75)
-    parser.add_argument('--beta', type=float, default=0.05)
+    parser.add_argument('--alpha', type=float, default=0.5)
+    parser.add_argument('--beta', type=float, default=0.01)
     parser.add_argument('--output_size', type=int, default=6)
 
     # other

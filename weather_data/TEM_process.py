@@ -28,7 +28,7 @@ random.seed(SEED)
 
 def get_split_time(num_domain=2, mode='pre_process', data_file=None, station=None, dis_type='mmd'):
     spilt_time = {
-        '2': [('2011-1-1 0:0', '2015-11-30 23:0'), ('2015-12-2 0:0', '2020-2-15 23:0')]
+        '2': [('2011-1-1 0:0', '2015-11-30 23:0'), ('2015-12-2 0:0', '2020-3-15 23:0')]
     }
     if mode == 'pre_process':
         return spilt_time[str(num_domain)]
@@ -42,7 +42,7 @@ def TDC(num_domain, data_file, station, dis_type='mmd'):
     start_time = datetime.datetime.strptime(
         '2011-01-01 00:00:00', '%Y-%m-%d %H:%M:%S')
     end_time = datetime.datetime.strptime(
-        '2020-2-15 23:00:00', '%Y-%m-%d %H:%M:%S')
+        '2020-3-15 23:00:00', '%Y-%m-%d %H:%M:%S')
     num_day = (end_time - start_time).days  ##一共有多少天
     split_N = 10  ##分为10个点
     data = pd.read_pickle(data_file)[station]
@@ -169,12 +169,12 @@ def train_qld_single_station(x, y):
 def load_weather_data_multi_domain(file_path, batch_size=6, station='Jintang', number_domain=2, mode='pre_process',
                                    dis_type='mmd'):
     # mode: 'auto', 'pre_process'
-    data_file = os.path.join(file_path, "QX_weather.pkl")
+    data_file = os.path.join(file_path, "TEM_weather.pkl")
 
     ##选取训练数据，计算均值和方差
     mean_train, std_train = data_QX.get_weather_data_statistic(data_file, station=station,
                                                                start_time='2011-1-1 0:0',
-                                                               end_time='2020-2-15 23:0')
+                                                               end_time='2020-3-15 23:0')
     ##对训练数据进行分割，形成分割list
     split_time_list = get_split_time(number_domain, mode=mode, data_file=data_file, station=station, dis_type=dis_type)
     train_list = []  ##如果分成两段就有两个train——loader
@@ -198,14 +198,14 @@ def load_weather_data_multi_domain(file_path, batch_size=6, station='Jintang', n
 
     ##对于验证集和测试集的数据准备
     feat_v, ytrue_v = data_QX.create_dataset(
-        data_file, station=station, start_date='2019-5-1 0:0', end_date='2020-12-31 23:0', mean=None, std=None)
+        data_file, station=station, start_date='2020-6-1 0:0', end_date='2020-10-31 23:0', mean=None, std=None)
     feat_valid, y_valid = train_qld_single_station(feat_v, ytrue_v)
     valid_vld_loader = data_QX.create_train_dataset(
         feat_valid, y_valid, batch_size=batch_size, mean=mean_train, std=std_train)
 
     ##测试集数据调整
     feat_te, ytrue_te = data_QX.create_dataset(
-        data_file, station=station, start_date='2019-4-1 0:0', end_date='2020-5-31 23:0', mean=None, std=None)
+        data_file, station=station, start_date='2019-6-1 0:0', end_date='2020-5-31 23:0', mean=None, std=None)
     feat_test, y_test = train_qld_single_station(feat_te, ytrue_te)
     test_loader = data_QX.create_train_dataset(
         feat_test, y_test, batch_size=batch_size, mean=mean_train, std=std_train)

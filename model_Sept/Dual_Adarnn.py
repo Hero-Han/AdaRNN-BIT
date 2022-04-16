@@ -253,7 +253,7 @@ class Share_Encoder(nn.Module):
                 i_start = j - len_win if j - len_win >= 0 else 0  ##0
                 i_end = j + len_win if j + len_win < self.len_seq else self.len_seq - 1  ##0
                 for k in range(i_start, i_end + 1):
-                    weight = out_weight_list_before[i][j] if self.model_type == 'DualAdaRNN' else 1 / (
+                    weight = out_weight_list_before[i][j] if self.model_type == 'DualAdarnn' else 1 / (
                             self.len_seq - h_start) * (2 * len_win + 1)
                     loss_transfer_before = loss_transfer_before + weight * criterion_transder.compute(
                         out_lis_before_s[i][:, j, :], out_lis_before_t[i][:, k, :])
@@ -268,7 +268,7 @@ class Share_Encoder(nn.Module):
                 i_start = j - len_win if j - len_win >= 0 else 0  ##0
                 i_end = j + len_win if j + len_win < self.len_seq else self.len_seq - 1  ##0
                 for k in range(i_start, i_end + 1):
-                    weight = out_weight_list_after[i][j] if self.model_type == 'DualAdaRNN' else 1 / (
+                    weight = out_weight_list_after[i][j] if self.model_type == 'DualAdarnn' else 1 / (
                             self.len_seq - h_start) * (2 * len_win + 1)
                     loss_transfer_after = loss_transfer_after + weight * criterion_transder.compute(
                         out_lis_before_s[i][:, j, :], out_lis_before_t[i][:, k, :])

@@ -19,7 +19,7 @@ def my_max(x, gamma):
     max_x = np.max(x)
     exp_x = np.exp((x - max_x) / gamma)
     Z = np.sum(exp_x)
-    return gamma * np.log(Z) + max_x, exp_x / Z
+    return gamma * (np.log(Z) + max_x), exp_x / Z
 
 
 @jit(nopython=True)
